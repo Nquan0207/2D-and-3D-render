@@ -7,9 +7,9 @@ from ..scene_base import BaseScene3D
 
 
 class CubeScene(BaseScene3D):
-    def __init__(self, width: int, height: int, renderer: Renderer) -> None:
+    def __init__(self, renderer: Renderer) -> None:
         super().__init__(renderer, axes_scale=1.6)
-        self.camera.resize(width, height)
+        # self.camera.resize(width, height)
 
         self.mesh = self._create_mesh()
 

@@ -151,7 +151,16 @@ class Renderer:
             self.uma_phong.upload_uniform_matrix3fv(K.astype(np.float32), "K_materials", False)
             self.uma_phong.upload_uniform_matrix3fv(I.astype(np.float32), "I_light", False)
             self.uma_phong.upload_uniform_scalar1f(float(settings.shininess), "shininess")
-            self.uma_phong.upload_uniform_vector3fv(settings.light_pos.astype(np.float32), "light_pos")
+            # self.uma_phong.upload_uniform_vector3fv(settings.light_pos.astype(np.float32), "light_pos")
+            light_world4 = np.array([
+                float(settings.light_pos[0]),
+                float(settings.light_pos[1]),
+                float(settings.light_pos[2]),
+                1.0,
+            ], dtype=np.float32)
+            light_eye4 = (view @ light_world4).astype(np.float32)
+            light_eye3 = light_eye4[:3]
+            self.uma_phong.upload_uniform_vector3fv(light_eye3, "light_pos")
 
         elif active_mode == RenderMode.TEXTURE:
             GL.glUseProgram(self.shader_texture.render_idx)

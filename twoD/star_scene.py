@@ -30,7 +30,8 @@ class StarScene(BaseScene3D):
     def __init__(self, renderer: Renderer) -> None:
         super().__init__(renderer, axes_scale=1.2)
 
-        positions = _star_triangles(points=5, r_outer=0.85, r_inner=0.38)
+        # Flip orientation by starting at +pi/2 (points downward versus upward)
+        positions = _star_triangles(points=5, r_outer=0.85, r_inner=0.38, start_angle=np.pi/2)
         uv = (positions[:, :2] + 1.0) * 0.5
         u, v = uv[:, 0], uv[:, 1]
         colors = np.stack([u, v, 1.0 - 0.5 * (u + v)], axis=1).astype(np.float32)

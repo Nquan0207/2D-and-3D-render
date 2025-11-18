@@ -30,6 +30,12 @@ from .twoD.arrow_scene import ArrowScene
 from .threeD.cube_scene import CubeScene
 from .threeD.surface_scene import SurfaceScene
 from .threeD.model_scene import ModelScene
+from .threeD.sphere_scene import SphereScene
+from .threeD.cylinder_scene import CylinderScene
+from .threeD.tetrahedron_scene import TetrahedronScene
+from .threeD.prism_scene import PrismScene
+from .threeD.cone_scene import ConeScene
+from .threeD.frustum_scene import FrustumScene
 from .rendering import Renderer
 from .control_panel import ControlPanel
 
@@ -117,9 +123,15 @@ class SimpleViewerApp:
         self.trapezoid_scene = TrapezoidScene(self.renderer)
         self.star_scene = StarScene(self.renderer)
         self.arrow_scene = ArrowScene(self.renderer)
-        self.cube_scene = CubeScene(width, height, self.renderer)
+        self.cube_scene = CubeScene(self.renderer)
         self.surface_scene = SurfaceScene(self.renderer)
         self.model_scene: Optional[ModelScene] = None
+        self.sphere_scene = SphereScene(self.renderer)
+        self.cylinder_scene = CylinderScene(self.renderer)
+        self.tetra_scene = TetrahedronScene(self.renderer)
+        self.prism_scene = PrismScene(self.renderer)
+        self.cone_scene = ConeScene(self.renderer)
+        self.frustum_scene = FrustumScene(self.renderer)
         self.control_panel = ControlPanel()
         self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Triangle")
 
@@ -185,6 +197,42 @@ class SimpleViewerApp:
             framebuffer_height=fb_height,
         )
         self.surface_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.sphere_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.cylinder_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.tetra_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.prism_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.cone_scene.on_window_resize(
+            width,
+            height,
+            framebuffer_width=fb_width,
+            framebuffer_height=fb_height,
+        )
+        self.frustum_scene.on_window_resize(
             width,
             height,
             framebuffer_width=fb_width,
@@ -274,6 +322,18 @@ class SimpleViewerApp:
     def enter_ellipse(self) -> None:
         self.state = "ellipse"
         self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Ellipse")
+    
+    def enter_trapezoid(self) -> None:
+        self.state = "trapezoid"
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Trapezoid")
+
+    def enter_star(self) -> None:
+        self.state = "star"
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Star")
+
+    def enter_arrow(self) -> None:
+        self.state = "arrow"
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Arrow")
 
     def enter_model(self) -> None:
         if self.model_scene is None:
@@ -282,6 +342,36 @@ class SimpleViewerApp:
         self.model_scene.reset_view()
         if "Model" in self.control_panel.SHAPES:
             self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Model")
+
+    def enter_sphere(self) -> None:
+        self.state = "sphere"
+        self.sphere_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Sphere")
+
+    def enter_cylinder(self) -> None:
+        self.state = "cylinder"
+        self.cylinder_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Cylinder")
+
+    def enter_tetrahedron(self) -> None:
+        self.state = "tetrahedron"
+        self.tetra_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Tetrahedron")
+
+    def enter_prism(self) -> None:
+        self.state = "prism"
+        self.prism_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Prism")
+
+    def enter_cone(self) -> None:
+        self.state = "cone"
+        self.cone_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Cone")
+
+    def enter_frustum(self) -> None:
+        self.state = "frustum"
+        self.frustum_scene.reset_view()
+        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Frustum")
 
     def _handle_shape_change(self, shape_name: str) -> None:
         if shape_name == "Triangle" and self.state != "triangle":
@@ -311,6 +401,18 @@ class SimpleViewerApp:
                 if not self._on_pick_model():
                     return
             self.enter_model()
+        elif shape_name == "Sphere" and self.state != "sphere":
+            self.enter_sphere()
+        elif shape_name == "Cylinder" and self.state != "cylinder":
+            self.enter_cylinder()
+        elif shape_name == "Tetrahedron" and self.state != "tetrahedron":
+            self.enter_tetrahedron()
+        elif shape_name == "Prism" and self.state != "prism":
+            self.enter_prism()
+        elif shape_name == "Cone" and self.state != "cone":
+            self.enter_cone()
+        elif shape_name == "Frustum" and self.state != "frustum":
+            self.enter_frustum()
 
     # ------------------------------------------------------------------ callbacks
     def on_resize(self, _win, width: int, height: int) -> None:
@@ -413,6 +515,18 @@ class SimpleViewerApp:
             self.arrow_scene.on_cursor(xpos, ypos)
         elif self.state == "model" and self.model_scene is not None:
             self.model_scene.on_cursor(xpos, ypos)
+        elif self.state == "sphere":
+            self.sphere_scene.on_cursor(xpos, ypos)
+        elif self.state == "cylinder":
+            self.cylinder_scene.on_cursor(xpos, ypos)
+        elif self.state == "tetrahedron":
+            self.tetra_scene.on_cursor(xpos, ypos)
+        elif self.state == "prism":
+            self.prism_scene.on_cursor(xpos, ypos)
+        elif self.state == "cone":
+            self.cone_scene.on_cursor(xpos, ypos)
+        elif self.state == "frustum":
+            self.frustum_scene.on_cursor(xpos, ypos)
 
     def on_mouse_button(self, win, button: int, action: int, mods: int) -> None:
         pressed = action == glfw.PRESS
@@ -447,6 +561,18 @@ class SimpleViewerApp:
             self.arrow_scene.on_mouse_button(button, pressed)
         elif self.state == "model" and self.model_scene is not None:
             self.model_scene.on_mouse_button(button, pressed)
+        elif self.state == "sphere":
+            self.sphere_scene.on_mouse_button(button, pressed)
+        elif self.state == "cylinder":
+            self.cylinder_scene.on_mouse_button(button, pressed)
+        elif self.state == "tetrahedron":
+            self.tetra_scene.on_mouse_button(button, pressed)
+        elif self.state == "prism":
+            self.prism_scene.on_mouse_button(button, pressed)
+        elif self.state == "cone":
+            self.cone_scene.on_mouse_button(button, pressed)
+        elif self.state == "frustum":
+            self.frustum_scene.on_mouse_button(button, pressed)
 
     def on_scroll(self, win, dx: float, dy: float) -> None:
         if self.imgui_renderer is not None and self._ensure_imgui_context():
@@ -477,6 +603,18 @@ class SimpleViewerApp:
             self.arrow_scene.on_scroll(dy)
         elif self.state == "model" and self.model_scene is not None:
             self.model_scene.on_scroll(dy)
+        elif self.state == "sphere":
+            self.sphere_scene.on_scroll(dy)
+        elif self.state == "cylinder":
+            self.cylinder_scene.on_scroll(dy)
+        elif self.state == "tetrahedron":
+            self.tetra_scene.on_scroll(dy)
+        elif self.state == "prism":
+            self.prism_scene.on_scroll(dy)
+        elif self.state == "cone":
+            self.cone_scene.on_scroll(dy)
+        elif self.state == "frustum":
+            self.frustum_scene.on_scroll(dy)
 
     def on_key(self, win, key: int, scancode: int, action: int, mods: int) -> None:
         if self.imgui_renderer is not None and self._ensure_imgui_context():
@@ -499,7 +637,7 @@ class SimpleViewerApp:
         self.imgui_renderer.process_inputs()
         imgui.new_frame()
 
-        if self.state in {"triangle", "rectangle", "pentagon", "hexagon", "circle", "ellipse", "trapezoid", "star", "arrow", "cube", "surface", "model"}:
+        if self.state in {"triangle", "rectangle", "pentagon", "hexagon", "circle", "ellipse", "trapezoid", "star", "arrow", "cube", "surface", "model", "sphere", "cylinder", "tetrahedron", "prism", "cone", "frustum"}:
             if self.state == "triangle":
                 active_shape = "Triangle"
             elif self.state == "rectangle":
@@ -523,7 +661,14 @@ class SimpleViewerApp:
             elif self.state == "surface":
                 active_shape = "Surface"
             else:
-                active_shape = "Model"
+                active_shape = (
+                    "Model" if self.state == "model" else
+                    ("Sphere" if self.state == "sphere" else
+                     ("Cylinder" if self.state == "cylinder" else
+                      ("Tetrahedron" if self.state == "tetrahedron" else
+                       ("Prism" if self.state == "prism" else
+                        ("Cone" if self.state == "cone" else "Frustum")))))
+                )
             self.control_panel.draw(
                 active_shape=active_shape,
                 triangle_scene=self.triangle_scene,
@@ -538,6 +683,12 @@ class SimpleViewerApp:
                 star_scene=self.star_scene,
                 arrow_scene=self.arrow_scene,
                 model_scene=self.model_scene,
+                sphere_scene=self.sphere_scene,
+                cylinder_scene=self.cylinder_scene,
+                tetra_scene=self.tetra_scene,
+                prism_scene=self.prism_scene,
+                cone_scene=self.cone_scene,
+                frustum_scene=self.frustum_scene,
                 on_shape_change=self._handle_shape_change,
                 on_quit=self._request_quit,
                 on_pick_texture=self._on_pick_texture,
@@ -618,24 +769,23 @@ class SimpleViewerApp:
             self.arrow_scene.draw()
         elif self.state == "model" and self.model_scene is not None:
             self.model_scene.draw()
+        elif self.state == "sphere":
+            self.sphere_scene.draw()
+        elif self.state == "cylinder":
+            self.cylinder_scene.draw()
+        elif self.state == "tetrahedron":
+            self.tetra_scene.draw()
+        elif self.state == "prism":
+            self.prism_scene.draw()
+        elif self.state == "cone":
+            self.cone_scene.draw()
+        elif self.state == "frustum":
+            self.frustum_scene.draw()
 
         # Draw ImGui overlay after scene so the control panel is visible
         GL.glDisable(GL.GL_DEPTH_TEST)
         self.render_imgui_overlay()
         GL.glEnable(GL.GL_DEPTH_TEST)
-
-    # quick enter helpers for new shapes
-    def enter_trapezoid(self) -> None:
-        self.state = "trapezoid"
-        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Trapezoid")
-
-    def enter_star(self) -> None:
-        self.state = "star"
-        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Star")
-
-    def enter_arrow(self) -> None:
-        self.state = "arrow"
-        self.control_panel.state.shape_idx = self.control_panel.SHAPES.index("Arrow")
 
     def run(self) -> None:
         print("Simple Viewer running. Use the on-screen ImGui controls or ESC to return/quit.")

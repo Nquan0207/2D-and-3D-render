@@ -115,8 +115,7 @@ class BaseScene3D:
     # ------------------------------------------------------------------ utilities for subclasses
     def _axes_model_matrix(self) -> np.ndarray:
         return (
-            T.translate(*self.transform.translation)
-            @ T.scale(self.axes_scale)
+            T.scale(self.axes_scale)
         ).astype(np.float32)
 
     def _model_matrix(self) -> np.ndarray:

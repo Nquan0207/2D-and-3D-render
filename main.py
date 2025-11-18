@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import os
 import sys
 
-from .viewer_app import run_app
+# Support running both as a module (python -m simpleviewer)
+# and directly as a script (python simpleviewer/main.py)
+if __package__ in (None, ""):
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from simpleviewer.viewer_app import run_app
+else:
+    from .viewer_app import run_app
 
 
 def main() -> None:
