@@ -1,0 +1,12 @@
+{
+  "assets": [
+    {
+      "name": "Street environment",
+      "path": "../assets/9btvoxf8n0cg-3dt/Street environment_V01.obj",
+      "class_id": 1,
+      "scale_range": [1.5, 2.0],
+      "normalize": true,
+      "split_groups": true
+    }
+  ]
+}
