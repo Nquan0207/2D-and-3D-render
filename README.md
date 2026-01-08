@@ -2,10 +2,6 @@
 
 Simple OpenGL-based viewer utilities and demo scenes.
 
-# simpleviewer
-
-Simple OpenGL-based viewer utilities and demo scenes.
-
 ## Demo
 
 ![SimpleViewer Demo](assets/demo.gif)
